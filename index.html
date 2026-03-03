@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การผลิตสื่อสิ่งพิมพ์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Charm:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper-color: #fdfaf3;
+            --text-color: #1a1a1a;
+            --accent-color: #8b4513;
+            --border-color: #e0d7c6;
+            --tech-red: #c0392b;
+        }
+
+        body { font-family: 'Sarabun', sans-serif; background-color: #d2b48c; margin: 0; padding: 0; line-height: 1.8; }
+
+        /* --- Navigation (ปรับปรุงใหม่เพื่อมือถือ) --- */
+        nav {
+            background-color: var(--accent-color);
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            position: sticky;
+            top: 0; z-index: 1000;
+            height: 60px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .site-name { font-family: 'Charm', cursive; font-size: 1.2rem; font-weight: bold; white-space: nowrap; }
+
+        /* Hamburger Icon */
+        .menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+        .menu-toggle span { width: 25px; height: 3px; background-color: white; border-radius: 2px; }
+
+        nav ul { list-style: none; display: flex; margin: 0; padding: 0; height: 100%; }
+        nav ul li { display: flex; align-items: center; }
+        nav ul li a { color: white; text-decoration: none; padding: 0 12px; height: 100%; display: flex; align-items: center; cursor: pointer; font-size: 0.95rem; }
+        nav ul li a:hover { background-color: var(--hover-color); }
+        nav ul li a.active { background-color: #fdfaf3; color: var(--accent-color); font-weight: bold; }
+
+        /* --- Book Layout --- */
+        .book-page {
+            max-width: 900px; width: 95%;
+            margin: 20px auto;
+            background-color: var(--paper-color);
+            padding: 50px 60px;
+            min-height: 85vh;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-left: 15px solid #a0522d;
+            display: none;
+            box-sizing: border-box;
+        }
+        .book-page.active { display: block; }
+
+        header { text-align: center; border-bottom: 3px double var(--border-color); padding-bottom: 25px; margin-bottom: 30px; }
+        h1 { margin: 10px 0; font-size: 1.9rem; color: var(--accent-color); }
+        
+        .content-body h2 { color: var(--accent-color); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 35px; font-size: 1.5rem; }
+        .content-body h3 { color: var(--tech-red); margin-top: 25px; font-size: 1.3rem; border-left: 5px solid var(--tech-red); padding-left: 15px; }
+        .content-body p { text-indent: 2.5em; margin: 15px 0; text-align: justify; }
+
+        .page-controls { display: flex; justify-content: space-between; margin-top: 50px; padding-top: 25px; border-top: 1px solid var(--border-color); }
+        .btn { background: var(--accent-color); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            nav ul { 
+                display: none; 
+                flex-direction: column; 
+                position: absolute; 
+                top: 60px; left: 0; width: 100%; 
+                background-color: var(--accent-color);
+                height: auto;
+            }
+            nav ul.show { display: flex; }
+            nav ul li { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
+            nav ul li a { padding: 15px; width: 100%; }
+            .book-page { padding: 35px 25px; border-left-width: 10px; }
+        }
+    /* ===== MENU UPGRADE ===== */
+
+nav ul li a{
+    position: relative;
+    transition: background-color .2s ease,
+                color .2s ease,
+                padding-left .2s ease;
+}
+
+/* hover */
+nav ul li a:hover{
+    background-color: rgba(255,255,255,0.15);
+    padding-left: 18px;
+}
+
+/* active page */
+nav ul li a.active{
+    background-color: #fdfaf3;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* active indicator bar */
+nav ul li a.active::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:5px;
+    height:100%;
+    background-color: var(--tech-red);
+}
+
+/* mobile animation */
+nav ul{
+    transition: max-height .3s ease;
+}
+
+/* scrollable mobile menu */
+@media (max-width:768px){
+    nav ul{
+        max-height:70vh;
+        overflow-y:auto;
+    }
+}
+    
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="site-name">Production of print media</div>
+        <div class="menu-toggle" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+        <ul id="main-menu">
+            </ul>
+    </nav>
+
+    <div id="content-area">
+        </div>
+
+    <footer>
+        <p style="text-align: center; padding: 20px; font-size: 0.8rem; color: #5d4037;">
+            สาขาเทคโนโลยีธุรกิจดิจิทัล วิทยาลัยการอาชีพสุไหงโก-ลก
+        </p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script>
+        const contentArea = document.getElementById('content-area');
+        const mainMenu = document.getElementById('main-menu');
+
+        function initBook() {
+            if (typeof contentData === 'undefined') return;
+
+            // 1. สร้างปุ่มเมนู และ หน้าเนื้อหา ทั้งหมด
+            Object.keys(contentData).forEach(key => {
+                const data = contentData[key];
+                
+                // สร้างเมนู
+                const li = document.createElement('li');
+                li.innerHTML = `<a id="nav-${key}" data-key="${key}" onclick="showPage('${key}')">${data.navTitle}</a>`;
+                mainMenu.appendChild(li);
+
+                // สร้างหน้า
+                const page = document.createElement('div');
+                page.id = `page-${key}`;
+                page.className = 'book-page';
+                
+                // จัดการปุ่ม นำทาง (Prev/Next)
+                const keys = Object.keys(contentData);
+                const currentIndex = keys.indexOf(key);
+                const prevKey = keys[currentIndex - 1];
+                const nextKey = keys[currentIndex + 1];
+
+                const controls = `
+                    <div class="page-controls">
+                        ${prevKey ? `<button class="btn" onclick="showPage('${prevKey}')">⬅ ${contentData[prevKey].navTitle}</button>` : '<div></div>'}
+                        ${nextKey ? `<button class="btn" onclick="showPage('${nextKey}')">${contentData[nextKey].navTitle} ➔</button>` : '<div></div>'}
+                    </div>
+                `;
+
+                page.innerHTML = `
+                    <header>
+                        <span style="font-weight:bold; color:var(--tech-red);">${data.headerSub || ''}</span>
+                        <h1>${data.title}</h1>
+                    </header>
+                    <div class="content-body">
+                        ${data.body}
+                        ${controls}
+                    </div>
+                `;
+                contentArea.appendChild(page);
+            });
+
+            // แสดงหน้าแรก
+            showPage('home');
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.book-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+            
+            document.getElementById(`page-${id}`).classList.add('active');
+            document.getElementById(`nav-${id}`).classList.add('active');
+            
+            toggleMenu(false); // ปิดเมนูมือถือเมื่อกดเลือกหน้า
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMenu(force) {
+            const menu = document.getElementById('main-menu');
+            if (force === false) menu.classList.remove('show');
+            else menu.classList.toggle('show');
+        }
+
+        window.onload = initBook;
+        
+const contentData = {
+    home: {
+        navTitle: "หน้าแรก",
+        headerSub: "รหัสวิชา 20204–2109",
+        title: "การผลิตสื่อสิ่งพิมพ์",
+        body: `
+            <h2>คำนำ (Preface)</h2>
+            <p>หนังสือเรียนวิชา การผลิตสื่อสิ่งพิมพ์ รหัสวิชา 20204–2109 เล่มนี้ เรียบเรียงขึ้นเพื่อใช้ประกอบการเรียนการสอนที่เน้นผู้เรียนเป็นสำคัญตามหลักสูตรประกาศนิกบัตรวิชาชีพ (ปวช.) พุทธศักราช 2562</p>
+            <div class="info-box">
+                <strong>สมรรถนะรายวิชา:</strong>
+                <ul>
+                    <li>แสดงความรู้เกี่ยวกับหลักการผลิตสื่อสิ่งพิมพ์ ประเภท และกระบวนการผลิตสื่อสิ่งพิมพ์</li>
+                    <li>วางแผนและเตรียมงานผลิตสื่อสิ่งพิมพ์ตามกระบวนการ</li>
+                    <li>ออกแบบและจัดทำสื่อสิ่งพิมพ์ด้วยโปรแกรมสำเร็จรูป Adobe InDesign</li>
+                </ul>
+            </div>
+            <img src="https://online.anyflip.com/yumrq/eywd/files/mobile/2.jpg?1658220665" style="width:250px; display:block; margin:10px auto; border:1px solid #ddd;" alt="Pages and Masters Panel">
+            <p>เนื้อหาครอบคลุม 9 หน่วยการเรียนรู้ ตั้งแต่ความรู้พื้นฐาน กระบวนการออกแบบ การใช้โปรแกรมจัดการข้อความ ภาพ สี วัตถุ เลเยอร์ และหน้ามาสเตอร์ พร้อมทั้งแบบฝึกหัดเพื่อฝึกทักษะการคิดและแก้ปัญหาเชิงวิชาชีพ</p>
+            <div style="text-align: right; margin-top: 50px; font-weight: bold;">
+                <p>ประภาวรรณ เกษวิริยะการณ์<br>ฝ่ายวิชาการ ศูนย์หนังสือ เมืองไทย</p>
+            </div>
+        `
+    },
+    u1: {
+    navTitle: "หน่วยที่ 1",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "ความรู้เกี่ยวกับสื่อสิ่งพิมพ์ (Complete Expert Edition)",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <ul>
+                <li>1.1 ความหมายของสื่อสิ่งพิมพ์</li>
+                <li>1.2 ความเป็นมาของสื่อสิ่งพิมพ์</li>
+                <li>1.3 ประเภทของสื่อสิ่งพิมพ์</li>
+                <li>1.4 บทบาทของสื่อสิ่งพิมพ์</li>
+                <li>1.5 ข้อดีและข้อจำกัดของสื่อสิ่งพิมพ์</li>
+            </ul>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>แสดงความรู้เกี่ยวกับสื่อสิ่งพิมพ์ และสืบค้นข้อมูลทางอินเทอร์เน็ตตามงานที่กำหนดให้</strong></p>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>3. จุดประสงค์เชิงพฤติกรรม (Behavioral Objectives)</h2>
+            <ol>
+                <li><strong>นิยามและสรุป</strong>ความหมายของสื่อสิ่งพิมพ์ในมิติด้านเทคโนโลยีและการสื่อสารได้ชัดเจน</li>
+                <li><strong>วิเคราะห์และลำดับ</strong>เหตุการณ์สำคัญในประวัติศาสตร์การพิมพ์ที่มีผลต่อการเปลี่ยนแปลงทางสังคม</li>
+                <li><strong>ประเมินและจัดหมวดหมู่</strong>ประเภทของสื่อสิ่งพิมพ์ให้สอดคล้องกับวัตถุประสงค์เชิงธุรกิจ</li>
+                <li><strong>วิพากษ์และเปรียบเทียบ</strong>ข้อดีและข้อจำกัดของสื่อสิ่งพิมพ์เพื่อเลือกใช้สื่อได้อย่างมีประสิทธิภาพ</li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>1.1 ความหมายของสื่อสิ่งพิมพ์ (Definition)</h3>
+        <p><strong>สื่อสิ่งพิมพ์ (Printed Media) หมายถึง สื่อที่ถ่ายทอดข้อมูลโดยการพิมพ์ลงบนวัสดุรองรับเพื่อเผยแพร่ในจำนวนมาก</strong></p>
+        <p>โดยถือเป็นนวัตกรรมแห่งการผลิตซ้ำที่เปลี่ยนข้อมูลนามธรรมให้กลายเป็นรูปธรรมทางกายภาพที่มีความคงทนและน่าเชื่อถือ</p>
+        
+        <div class="tech-deep-dive">
+            <strong>💡 ตัวอย่างรูปธรรม (Concrete Example):</strong>
+            <p>ลองนึกภาพ <strong>"บัตรคอนเสิร์ต"</strong> ครับ ในคอมพิวเตอร์มันคือไฟล์ข้อมูลดิจิทัล แต่เมื่อผ่านกระบวนการพิมพ์ลงบนกระดาษพิเศษ มีการปั๊มฟอยล์กันปลอม มันจะกลายเป็น <strong>สื่อสิ่งพิมพ์</strong> ที่มีผิวสัมผัส และใช้เป็นหลักฐานยืนยันสิทธิ์ได้จริง</p>
+        </div>
+
+        <h3>1.2 ความเป็นมาของสื่อสิ่งพิมพ์ (The Evolution Timeline)</h3>
+        <p>วิวัฒนาการของการพิมพ์มีการเปลี่ยนแปลงครั้งใหญ่จากระบบทำมือสู่ระบบอัตโนมัติ ดังนี้:</p>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-4Qlw_5b22secFBC2jNEE9eTSm8QOUA9ARtu83BcoMQaJsPJnYNjSTZ1i&s=10" style="width:100%; border-radius:8px; margin:20px 0; box-shadow:0 4px 8px rgba(0,0,0,0.1);" alt="Gutenberg Press">
+        
+
+        <div class="info-box">
+            <ul>
+                <li><strong>ยุคทำมือและแม่พิมพ์ไม้ (Hand-copied & Woodblock):</strong> เริ่มต้นจากการคัดลอกด้วยมือ สู่การแกะสลักไม้เพื่อประทับหมึกในจีนโบราณ</li>
+                <li><strong>ยุคตัวเรียงโลหะ (Gutenberg Era - 1450):</strong> โยฮันเนส กูเทนเบิร์ก ประดิษฐ์ตัวเรียงพิมพ์โลหะผสม (ตะกั่ว-ดีบุก-พลวง) และพิมพ์คัมภีร์ไบเบิลเป็นเล่มแรก</li>
+                <li><strong>ยุคแท่นพิมพ์อุตสาหกรรม (Industrial Revolution):</strong> การเกิดแท่นพิมพ์พลังงานไอน้ำ (Steam-powered Press) และการพัฒนา <strong>การพิมพ์ออฟเซต (Offset Printing)</strong> ที่ทำให้ผลิตงานได้เร็วและต้นทุนถูกลงมหาศาล</li>
+                <li><strong>ยุคสมัยใหม่และประวัติศาสตร์ไทย:</strong> หมอบรัดเลย์ (1844) จัดทำหนังสือพิมพ์ <strong>"บางกอกรีคอร์เดอร์"</strong> นำร่องระบบการสื่อสารสมัยใหม่ในไทย</li>
+            </ul>
+        </div>
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/PrintMus_038.jpg/1280px-PrintMus_038.jpg" style="width:100%; border-radius:8px; margin:20px 0; box-shadow:0 4px 8px rgba(0,0,0,0.1);">
+
+        <h3>1.3 ประเภทของสื่อสิ่งพิมพ์</h3>
+        <table>
+            <tr>
+                <th>ประเภทสื่อ</th>
+                <th>รายละเอียดเชิงเทคนิค</th>
+                <th>ตัวอย่างงานจริง (Concrete Examples)</th>
+            </tr>
+            <tr>
+                <td>สื่อโฆษณา</td>
+                <td>เน้นสีสัน CMYK และการอาบเคลือบ (Coating)</td>
+                <td>แผ่นพับ, แคตตาล็อกสินค้า, โปสเตอร์</td>
+            </tr>
+            <tr>
+                <td>สื่อการศึกษา</td>
+                <td>เน้นการจัดหน้า (Layout) และกระดาษถนอมสายตา</td>
+                <td>หนังสือเรียน, นิตยสารวิชาการ, พจนานุกรม</td>
+            </tr>
+            <tr>
+                <td>สื่อบรรจุภัณฑ์</td>
+                <td>เน้นการไดคัท (Die-cut) และความหนาของวัสดุ</td>
+                <td>กล่อง iPhone, ฉลากสินค้า, กล่องขนม</td>
+            </tr>
+            <tr>
+                <td>สื่อธุรกิจ</td>
+                <td>เน้นความสม่ำเสมอของสี (Brand Consistency)</td>
+                <td>นามบัตร, ซองจดหมายธนาคาร, ปฏิทินตั้งโต๊ะ</td>
+            </tr>
+            <tr>
+                <td><strong>สื่อสิ่งพิมพ์ลักษณะพิเศษ</strong></td>
+                <td>ใช้เทคนิคขั้นสูงเพื่อความปลอดภัยและคุณสมบัติเฉพาะ</td>
+                <td><strong>ธนบัตร, แสตมป์, บัตรพลาสติก</strong></td>
+            </tr>
+        </table>
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiH-nGi4RNqIAtluUnMAkgqCy8iiVBlFI7XlRSJe7SRaDhWuqBf7MXIN1vdY_W2-9kxz_B1L_P1m3Jgsht11YJEzUOpWNY7N3JJIcqLb2vsy3wTNl8z8hNUWOJB4HMVQJGHkjpG7MyUPg9T/s1600/IMG_8728.gif" style="width:100%; border-radius:8px; margin:20px 0;" alt="Print Media Types">
+        
+
+        <h3>1.4 บทบาทของสื่อสิ่งพิมพ์</h3>
+        <p>สื่อสิ่งพิมพ์ทำหน้าที่สำคัญในฐานะ <strong>"หลักฐานที่จับต้องได้"</strong> โดยเฉพาะในงานที่ต้องการความน่าเชื่อถือทางกฎหมาย เช่น โฉนดที่ดิน หรือใบประกาศนียบัตร</p>
+
+        <h3>1.5 ข้อดีและข้อจำกัดของสื่อสิ่งพิมพ์</h3>
+        <div class="tech-deep-dive">
+            <h4>✅ ข้อดี (Advantages):</h4>
+            <ul>
+                <li><strong>ความน่าเชื่อถือสูง:</strong> เป็นหลักฐานที่แก้ไขได้ยากและจับต้องได้จริง</li>
+                <li><strong>อ่านง่ายสบายตา:</strong> ลดการใช้พลังงานไฟฟ้าและแสงสีฟ้าจากหน้าจอ</li>
+                <li><strong>เก็บรักษาได้นาน:</strong> คงสภาพข้อมูลได้นานนับสิบปีหากเก็บรักษาอย่างถูกต้อง</li>
+                <li><strong>คุณภาพสีแม่นยำ:</strong> ระบบ Spot Color (Pantone) ให้สีที่เที่ยงตรงกว่าหน้าจอทั่วไป</li>
+            </ul>
+            
+            <h4>❌ ข้อจำกัด (Limitations):</h4>
+            <ul>
+                <li><strong>แก้ไขไม่ได้หลังพิมพ์:</strong> หากผิดพลาดต้องทิ้งและเริ่มใหม่ทั้งหมด (No Backspace)</li>
+                <li><strong>ต้นทุนเริ่มต้นสูง:</strong> การทำแม่พิมพ์มีราคาสูงหากสั่งพิมพ์จำนวนน้อย</li>
+                <li><strong>ใช้เวลาผลิตนาน:</strong> มีขั้นตอนเตรียมพิมพ์ (Pre-press) ที่ซับซ้อน</li>
+                <li><strong>การขนส่งและจัดเก็บ:</strong> มีน้ำหนักและกินพื้นที่มากกว่าข้อมูลดิจิทัล</li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 1</h4>
+            <p>สื่อสิ่งพิมพ์คือการผสมผสานระหว่างศิลปะและวิทยาศาสตร์ เพื่อสร้างความมั่นคงในการสื่อสารที่ยั่งยืนที่สุดในโลก</p>
+        </div>
+    `
+},
+    u2: {
+    navTitle: "หน่วยที่ 2",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "การออกแบบและกระบวนการผลิตสื่อสิ่งพิมพ์ (Advanced Industrial Workflow)",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <ul>
+                <li>2.1 การออกแบบสื่อสิ่งพิมพ์</li>
+                <li>2.2 กระบวนการผลิตสื่อสิ่งพิมพ์</li>
+                <li>2.3 การผลิตสื่อสิ่งพิมพ์ด้วยคอมพิวเตอร์แบบตั้งโต๊ะ</li>
+            </ul>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>วางแผนและเตรียมงานผลิตสื่อสิ่งพิมพ์ตามกระบวนการ และวางองค์ประกอบตามแบบที่กำหนด</strong></p>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>3. จุดประสงค์เชิงพฤติกรรม (Behavioral Objectives)</h2>
+            <ol>
+                <li><strong>วิเคราะห์และจัดการ</strong>องค์ประกอบศิลป์ รวมถึงหลักการออกแบบและตัวอักษรเพื่อสร้างสื่อที่ทรงพลัง</li>
+                <li><strong>ลำดับและประยุกต์</strong>ขั้นตอนการผลิตสื่อสิ่งพิมพ์ในระบบอุตสาหกรรมได้อย่างถูกต้อง</li>
+                <li><strong>ประเมินและตัดสินใจ</strong>เลือกเทคโนโลยีการพิมพ์ที่ตอบโจทย์ทั้งวัสดุและงบประมาณ</li>
+                <li><strong>ตรวจสอบและยืนยัน</strong>ความถูกต้องของไฟล์งานผ่าน Micro Checklist ก่อนส่งโรงพิมพ์</li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>2.1 การออกแบบสื่อสิ่งพิมพ์</h3>
+        
+        <h4>🎨 องค์ประกอบศิลป์ (The Toolbox)</h4>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>จุด (Point), เส้น (Line), รูปร่าง (Shape):</strong> พื้นฐานการสร้างฟอร์ม</li>
+                <li><strong>สี (Color):</strong> CMYK สำหรับงานพิมพ์</li>
+                <li><strong>พื้นที่ว่าง (White Space):</strong> สร้างความสมดุลและลดความอึดอัด</li>
+            </ul>
+        </div>
+
+        <h4>🅰️ พื้นฐานตัวอักษร (Typography Basics)</h4>
+        
+        <ul>
+            <li><strong>Serif / Sans-serif:</strong> การเลือกฟอนต์ที่มีหัว (มีฐาน) หรือไม่มีหัว เพื่ออารมณ์ที่ต่างกัน</li>
+            <li><strong>Leading:</strong> ระยะห่างระหว่างบรรทัด (Line Spacing) เพื่อการอ่านที่ลื่นไหล</li>
+            <li><strong>Kerning:</strong> การปรับระยะห่างระหว่างตัวอักษรเป็นคู่ๆ เพื่อความสวยงาม</li>
+        </ul>
+        
+
+        <h4>📏 หลักการออกแบบ (Design Principles)</h4>
+        <p><strong>Balance</strong> (สมดุล), <strong>Contrast</strong> (ความต่าง), <strong>Alignment</strong> (การจัดวาง), <strong>Repetition</strong> (การซ้ำ), และ <strong>Hierarchy</strong> (การลำดับ)</p>
+
+        <h3>2.2 กระบวนการผลิตสื่อสิ่งพิมพ์</h3>
+        <img src="https://vc1i.rweb-images.com/www.lasuprint.com/images/column_1376639162/laserserv-complete-source-for-printer-cartridges(2).jpg" style="width:100%; border-radius:8px; margin:20px 0;" alt="Offset Printing Machine">
+        <div class="tech-deep-dive" style="text-align: center; font-weight: bold;">
+            Idea ➔ Sketch ➔ Layout ➔ Proof ➔ Print ➔ Finishing
+        </div>
+
+        <h4>🏭 ระบบการพิมพ์ในอุตสาหกรรม</h4>
+        
+        <table>
+            <tr>
+                <th>ระบบการพิมพ์</th>
+                <th>ลักษณะทางเทคนิค</th>
+                <th>งานที่เหมาะสม</th>
+            </tr>
+            <tr>
+                <td>Offset</td>
+                <td>แม่พิมพ์อลูมิเนียม สีคมชัดสูง</td>
+                <td>หนังสือ, แคตตาล็อก (จำนวน 1,000+)</td>
+            </tr>
+            <tr>
+                <td>Digital Print</td>
+                <td>พิมพ์จากไฟล์โดยตรง ไม่ใช้เพลท</td>
+                <td>งานด่วน, นามบัตร, เมนูอาหาร</td>
+            </tr>
+            <tr>
+                <td>Inkjet</td>
+                <td>หัวพ่นหมึกต่อเนื่อง (Large Format)</td>
+                <td>ไวนิล, ป้ายโฆษณาขนาดใหญ่</td>
+            </tr>
+            <tr>
+                <td><strong>Gravure</strong></td>
+                <td><strong>แม่พิมพ์ร่องลึก (Rotogravure)</strong></td>
+                <td><strong>ซองขนม, ฟิล์ม, บรรจุภัณฑ์พรีเมียม</strong></td>
+            </tr>
+            <tr>
+                <td>Flexography</td>
+                <td>แม่พิมพ์ยางยืดหยุ่น</td>
+                <td>ถุงพลาสติก, กล่องลูกฟูก</td>
+            </tr>
+        </table>
+        <img src="https://playingcard.or.th/wp-content/uploads/2022/04/257314815_5001405826554327_695559212175546203_n.png" style="width:80%; display:block; margin:20px auto;" alt="Gravure Process">
+
+        <h4>⚠️ ตัวอย่างปัญหา: หากไม่ตั้งค่าจะเกิดอะไรขึ้น?</h4>
+        <div class="info-box" style="background-color: #fff5f5;">
+            <ul>
+                <li><strong>ขอบขาว:</strong> เกิดจากการไม่ตั้ง <strong>Bleed</strong> เมื่อเครื่องตัดกระดาษคลาดเคลื่อนเพียง 1mm จะเห็นเส้นสีขาวทันที</li>
+                <li><strong>สีเพี้ยน:</strong> การส่งไฟล์ <strong>RGB</strong> จะถูกแปลงเป็น <strong>CMYK</strong> อัตโนมัติ ทำให้สีเขียวหรือสีฟ้าสดๆ กลายเป็นสีตุ่นและซีดลง</li>
+            </ul>
+        </div>
+
+        <h3>2.3 การผลิตสื่อสิ่งพิมพ์ด้วยคอมพิวเตอร์ (DTP)</h3>
+        <table>
+            <tr>
+                <th>องค์ประกอบ</th>
+                <th>หน้าที่</th>
+                <th>ตัวอย่าง</th>
+            </tr>
+            <tr>
+                <td>Software</td>
+                <td>จัดหน้า, เลเยอร์, เตรียมไฟล์</td>
+                <td>Adobe InDesign, Illustrator</td>
+            </tr>
+            <tr>
+                <td>Hardware</td>
+                <td>ประมวลผลและแสดงผลสี</td>
+                <td>Mac Studio, จอภาพสีตรง</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <div class="tech-deep-dive" style="background-color: #fcf3cf;">
+            <h4>📋 Professional Micro Checklist</h4>
+            <ul>
+                <li>✅ <strong>Image Resolution:</strong> ภาพประกอบต้องมีความละเอียดไม่ต่ำกว่า <strong>300 DPI</strong></li>
+                <li>✅ <strong>Rich Black:</strong> พื้นดำขนาดใหญ่ควรใช้ค่าสี <strong>C60 M40 Y40 K100</strong> เพื่อความดำสนิท (ไม่ใช่แค่ K100)</li>
+                <li>✅ <strong>Bleed & Margin:</strong> ตัดตก 3mm และระยะขอบปลอดภัยภายใน 5mm</li>
+                <li>✅ <strong>Create Outlines:</strong> แปลงตัวอักษรเป็นเวกเตอร์ ป้องกันฟอนต์เพี้ยน</li>
+            </ul>
+            
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 2</h4>
+            <p>ความสวยงามเป็นเรื่องของ "ศิลปะ" แต่ความถูกต้องของไฟล์งานเป็นเรื่องของ "วิชาชีพ" การส่งไฟล์ที่สมบูรณ์ช่วยลดต้นทุนและเวลาได้มหาศาล</p>
+        </div>
+    `
+},
+    u3: {
+    navTitle: "หน่วยที่ 3",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 3 เริ่มต้นใช้งานโปรแกรมผลิตสื่อสิ่งพิมพ์",
+    body: `
+        <section class="info-box" style="background-color: #f0f4f8; border-left: 8px solid #34495e;">
+            <h2>0. สื่อและอุปกรณ์การเรียนรู้</h2>
+            <ul>
+                <li><strong>ซอฟต์แวร์:</strong> โปรแกรม Adobe InDesign CS6</li>
+                <li><strong>ฮาร์ดแวร์:</strong> เครื่องคอมพิวเตอร์สำหรับการปฏิบัติการ</li>
+                <li><strong>อุปกรณ์ต่อพ่วง:</strong> เครื่องพิมพ์ (Printer) สำหรับทดสอบการพิมพ์งาน</li>
+            </ul>
+        </section>
+
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>3.1 การเข้าสู่โปรแกรม Adobe InDesign CS6</li>
+                    <li>3.2 การออกจากโปรแกรม Adobe InDesign CS6</li>
+                    <li>3.3 ส่วนประกอบต่าง ๆ ของโปรแกรมฯ</li>
+                    <li>3.4 การสร้างไฟล์งานใหม่</li>
+                    <li>3.5 การตั้งค่าในหน้าต่าง New Document (Document Setup)</li>
+                    <li>3.6 การบันทึกไฟล์งาน</li>
+                    <li>3.7 การเปิดไฟล์งาน</li>
+                </ul>
+                <ul>
+                    <li>3.8 การปิดไฟล์งาน</li>
+                    <li>3.9 การพิมพ์งานทางเครื่องพิมพ์</li>
+                    <li>3.10 การเพิ่มและลดจำนวนหน้า</li>
+                    <li>3.11 การลบจำนวนหน้าเอกสาร</li>
+                    <li>3.12 การย้ายหน้าเอกสาร</li>
+                    <li>3.13 มุมมองเอกสาร</li>
+                    <li>3.14 การส่งออกไฟล์งาน (Export PDF)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>2. จุดประสงค์การเรียนรู้ (Behavioral Objectives)</h2>
+            <ol>
+                <li>สามารถบอกวิธีการเข้าสู่และออกจากโปรแกรมได้อย่างถูกต้องตามมาตรฐานวิชาชีพ</li>
+                <li>สามารถอธิบายส่วนประกอบของโปรแกรมและตั้งค่า New Document ได้อย่างแม่นยำ</li>
+                <li>สามารถปฏิบัติการจัดการไฟล์งานและส่งออกไฟล์งานตามมาตรฐานการพิมพ์</li>
+                <li>มีเจตคติที่ดีตามแนวปรัชญาของเศรษฐกิจพอเพียง ด้านความรอบคอบและความรับผิดชอบ</li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>3.1 การเข้าสู่โปรแกรม Adobe InDesign CS6</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> คลิกปุ่ม <strong>Start > All Programs > Adobe > Adobe InDesign CS6</strong></p>
+
+        <h3>3.2 การออกจากโปรแกรม Adobe InDesign CS6</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ไปที่เมนู <strong>File > Exit</strong> หรือกดคีย์ลัด <strong>Ctrl + Q</strong> เพื่อปิดโปรแกรม</p>
+
+        <h3>3.3 ส่วนประกอบต่าง ๆ ของโปรแกรมฯ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> เรียนรู้พื้นที่ทำงาน (Workspace) เช่น Toolbox สำหรับเครื่องมือออกแบบ และ Control Panel สำหรับปรับค่าวัตถุ</p>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcQr36yEOf7w5UB3KxoizT3tkCSd9MotYt44dvq48zvlRp8y1cSguUkctH&s=10" style="width:100%; background:#fff; padding:10px; border-radius:8px;" alt="Bleed and Slug Settings">
+        <h3>3.4 การสร้างไฟล์งานใหม่</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ไปที่เมนู <strong>File > New > Document</strong> หรือกด <strong>Ctrl + N</strong></p>
+        <img src="https://creativepro.com/wp-content/uploads/2018/12/new-document-tip-1.png" style="width:100%; background:#fff; padding:10px; border-radius:8px;" alt="Bleed and Slug Settings">
+        <h3>3.5 การตั้งค่าในหน้าต่าง New Document (Document Setup)</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> กำหนดค่าการทำงานให้สอดคล้องกับมาตรฐานงานพิมพ์:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>Intent / Color Mode:</strong> ตั้งเป็น <strong>Print</strong> เพื่อใช้ระบบสี <strong>CMYK</strong> อัตโนมัติ</li>
+                <li><strong>Facing Pages:</strong> เลือกเมื่อต้องการออกแบบงานหน้าคู่ เช่น หนังสือ หรือนิตยสาร</li>
+                <li><strong>Bleed:</strong> ตั้งค่า <strong>3 mm</strong> รอบด้านเพื่อป้องกันการเกิดขอบขาวหลังการเจียนกระดาษ</li>
+            </ul>
+        </div>
+
+        <h3>3.6 การบันทึกไฟล์งาน</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ไปที่เมนู <strong>File > Save</strong> (Ctrl + S) เพื่อบันทึกเป็นไฟล์นามสกุล .indd</p>
+        <ul>
+            <li><strong>Compatibility:</strong> สามารถบันทึกเป็นไฟล์ <strong>.idml</strong> เพื่อความเข้ากันได้กับโปรแกรมเวอร์ชันอื่น ๆ</li>
+        </ul>
+
+        <h3>3.7 การเปิดไฟล์งาน</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ไปที่เมนู <strong>File > Open</strong> (Ctrl + O) เพื่อเรียกใช้งานโปรเจกต์ที่บันทึกไว้</p>
+
+        <h3>3.8 การปิดไฟล์งาน</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ไปที่เมนู <strong>File > Close</strong> (Ctrl + W) เพื่อปิดเฉพาะหน้าต่างเอกสารปัจจุบัน</p>
+
+        <h3>3.9 การพิมพ์งานทางเครื่องพิมพ์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ตรวจสอบเลย์เอาต์บนแผ่นกระดาษจริงด้วยการกด <strong>Ctrl + P</strong></p>
+
+        <h3>3.10 การเพิ่มและลดจำนวนหน้า</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> คลิกไอคอน <strong>Create New Page</strong> ในพาเนล Pages เพื่อเพิ่มหน้า (หากต้องการลดหน้าให้ลบออกในหัวข้อ 3.11)</p>
+
+        <h3>3.11 การลบจำนวนหน้าเอกสาร</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> เลือกหน้ากระดาษในพาเนล Pages แล้วคลิกไอคอน <strong>ถังขยะ</strong></p>
+
+        <h3>3.12 การย้ายหน้าเอกสาร</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> คลิกลากหน้ากระดาษในพาเนล Pages เพื่อสลับลำดับเนื้อหาหนังสือตามต้องการ</p>
+
+        <h3>3.13 มุมมองเอกสาร (Screen Modes)</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> กดปุ่ม <strong>W</strong> บนคีย์บอร์ดเพื่อสลับมุมมองในการทำงานดังนี้:</p>
+        <ul>
+            <li><strong>Normal:</strong> สำหรับการจัดวางองค์ประกอบ (แสดงเส้นไกด์และเส้นขอบเฟรม)</li>
+            <li><strong>Preview:</strong> ซ่อนเส้นไกด์และกรอบวัตถุ เพื่อแสดงผลใกล้เคียงงานพิมพ์จริง</li>
+        </ul>
+
+        <h3>3.14 การส่งออกไฟล์งาน (Export PDF)</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> กด <strong>Ctrl + E</strong> เพื่อสร้างไฟล์ส่งโรงพิมพ์ โดยมีขั้นตอนสำคัญดังนี้:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li>เลือก Adobe PDF (Print) → Adobe PDF Preset: <strong>PDF/X-1a</strong> เพื่อมาตรฐานสูงสุด</li>
+                <li>ในหมวด Marks and Bleeds ต้องติ๊ก <strong>Use Document Bleed Settings</strong> เสมอ</li>
+            </ul>
+        </div>
+        <div class="info-box" style="border-left:5px solid #d35400; background-color: #fff9f2;">
+            <strong>💡 Pro Tip:</strong> ก่อนส่งไฟล์ให้โรงพิมพ์ ควรใช้คำสั่ง <strong>File > Package</strong> เพื่อรวบรวมฟอนต์และรูปภาพทั้งหมดให้เป็นระบบ
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 3</h4>
+            <p>ความแม่นยำในการจัดการไฟล์และมุมมองเอกสาร คือรากฐานสำคัญที่จะช่วยให้นักออกแบบผลิตสื่อสิ่งพิมพ์ที่มีคุณภาพและลดข้อผิดพลาดก่อนการผลิต</p>
+        </div>
+    `
+},
+
+    u4: {
+    navTitle: "หน่วยที่ 4",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 4 การสร้างข้อความเพื่อผลิตสื่อสิ่งพิมพ์",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>4.1 ลักษณะและขนาดตัวอักษร</li>
+                    <li>4.2 การสร้างข้อความ</li>
+                    <li>4.3 การนำไฟล์จากโปรแกรมอื่นมาใช้งานในโปรแกรมอโดบี อินดีไซน์ ซีเอส 6</li>
+                </ul>
+                <ul>
+                    <li>4.4 การไหลของข้อความ</li>
+                    <li>4.5 เครื่องมือปรับแต่งตัวอักษรและข้อความ</li>
+                    <li>4.6 การจัดตำแหน่งข้อความ</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>ปฏิบัติการสร้างข้อความเพื่อผลิตสื่อสิ่งพิมพ์ด้วยโปรแกรมสำเร็จรูป</strong></p>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>4.1 ลักษณะและขนาดตัวอักษร</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> กำหนดค่าพื้นฐานผ่านพาเนล <strong>Character</strong> เพื่อความสวยงามและอ่านง่าย:</p>
+        
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>Font Style & Family:</strong> เลือกใช้ฟอนต์ที่มีน้ำหนักหลากหลาย (เช่น Regular, Bold) เพื่อสร้างลำดับความสำคัญของเนื้อหา</li>
+                <li><strong>Font Size:</strong> กำหนดหน่วยเป็น <strong>Point (pt)</strong> ซึ่งเป็นมาตรฐานสากลสำหรับงานผลิตสื่อสิ่งพิมพ์</li>
+                <li><strong>X-Height:</strong> รู้จักสัดส่วนความสูงตัวอักษรพิมพ์เล็ก (เป็นความรู้เสริม ยังไม่ต้องใช้ในการคำนวณ)</li>
+            </ul>
+        </div>
+
+        <h3>4.2 การสร้างข้อความ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้เครื่องมือ <strong>Type Tool (T)</strong> เพื่อสร้างพื้นที่รองรับข้อมูล</p>
+        <p>ทั้งสองวิธีด้านล่างจะสร้าง <strong>Text Frame</strong> เหมือนกัน ต่างกันที่วิธีเริ่มต้นสร้างงาน:</p>
+        <table>
+            <tr>
+                <th>วิธีสร้าง</th>
+                <th>ชื่อเรียก</th>
+                <th>ลักษณะการทำงาน</th>
+            </tr>
+            <tr>
+                <td>คลิกครั้งเดียว</td>
+                <td>Point Text</td>
+                <td>กรอบจะขยายความยาวตามจำนวนตัวอักษรที่พิมพ์</td>
+            </tr>
+            <tr>
+                <td>คลิกลากเป็นกรอบ</td>
+                <td>Area Type</td>
+                <td>กำหนดขอบเขตพื้นที่ตายตัวให้ข้อความอยู่ภายในกรอบ</td>
+            </tr>
+        </table>
+
+        <h3>4.3 การนำไฟล์จากโปรแกรมอื่นมาใช้งานฯ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> การนำเข้าไฟล์ Microsoft Word หรือไฟล์ Text เข้ามาจัดหน้าในโปรแกรม:</p>
+        <ul>
+            <li>ใช้คำสั่ง <strong>File > Place</strong> หรือกดคีย์ลัด <strong>Ctrl + D</strong></li>
+            <li><strong>เทคนิค Autoflow:</strong> กด <strong>Shift + คลิก</strong> เมื่อวางข้อความ เพื่อให้โปรแกรมสร้างหน้าและเทเนื้อหาให้อัตโนมัติจนจบไฟล์</li>
+        </ul>
+
+        <h3>4.4 การไหลของข้อความ</h3>
+        <img src="https://i.ytimg.com/vi/IAICDOjua6E/maxresdefault.jpg" style="width:150px; display:block; margin:10px auto;" alt="Overset Text Icon">
+        <p><strong>วิธีปฏิบัติ:</strong> เมื่อเนื้อหาล้นเฟรม (เกิดเครื่องหมายบวกสีแดง) ให้ทำการเชื่อมโยงเฟรมดังนี้:</p>
+        
+        <div class="tech-deep-dive">
+            <ul>
+                <li>ใช้ Selection Tool (V) <strong>คลิกที่จุด Out-port</strong> (สี่เหลี่ยมเล็กๆ มุมขวาล่างที่มีเครื่องหมายบวก)</li>
+                <li>นำไป <strong>คลิกบนเฟรมถัดไป</strong> เพื่อเชื่อมโยงให้เนื้อหาไหลต่อเนื่องข้ามหน้ากัน</li>
+                <li><strong>ตรวจสอบ:</strong> เมื่อทำการเชื่อมต่อสำเร็จแล้ว <strong>เครื่องหมายบวกสีแดง (+) ต้องหายไป</strong></li>
+            </ul>
+        </div>
+
+        <h3>4.5 เครื่องมือปรับแต่งตัวอักษรและข้อความ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> การปรับแต่งรายละเอียดเพื่อความเป็นมืออาชีพ:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>Leading:</strong> ปรับระยะห่างบรรทัดใน Character Panel <strong>(มักตั้งมากกว่าขนาดฟอนต์ 2–4 pt)</strong></li>
+                <li><strong>Scale Warning:</strong> หลีกเลี่ยงการดึงสเกลตัวอักษรให้บิดเบี้ยว ควรเปลี่ยนน้ำหนักฟอนต์แทนเพื่อรักษาความงามของ Typography</li>
+                <li><strong>Show Hidden Characters:</strong> กด <strong>Ctrl + Alt + I</strong> เพื่อตรวจหาอักขระที่ซ่อนอยู่เกินความจำเป็น</li>
+            </ul>
+        </div>
+
+        <h3>4.6 การจัดตำแหน่งข้อความ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> จัดระเบียบย่อหน้าผ่านพาเนล <strong>Paragraph</strong>:</p>
+        
+        <ul>
+            <li>ตั้งค่าที่ <strong>Paragraph Panel Menu > Adobe World-Ready Composer</strong> เพื่อให้โปรแกรมตัดคำไทยได้ถูกต้อง</li>
+            <li><strong>Alignment:</strong> เลือกจัดชิดซ้าย (Align Left) หรือเต็มบรรทัด (Justify) ตามลักษณะของสื่อ</li>
+            <li><strong>Hyphenation:</strong> ปิด (Uncheck) สำหรับงานภาษาไทย เพื่อป้องกันคำขาดกลางพยางค์</li>
+        </ul>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 4</h4>
+            <p>การเข้าใจกลไกของ Text Frame และการจัดการข้อความอย่างเป็นระบบ คือรากฐานที่จะเปลี่ยนผลงานออกแบบให้กลายเป็นสื่อสิ่งพิมพ์ระดับมาตรฐานอุตสาหกรรม</p>
+        </div>
+    `
+},
+    u5: {
+    navTitle: "หน่วยที่ 5",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 5 ภาพประกอบสื่อสิ่งพิมพ์",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>5.1 ภาพและคุณสมบัติของไฟล์ภาพ</li>
+                    <li>5.2 ความสำคัญและประเภทของภาพประกอบสื่อสิ่งพิมพ์</li>
+                </ul>
+                <ul>
+                    <li>5.3 ลักษณะของภาพวาดในโปรแกรมอโดบี อินดีไซน์ ซีเอส 6</li>
+                    <li>5.4 การนำรูปภาพจากภายนอกเข้ามาใช้งานในโปรแกรมอโดบี อินดีไซน์ ซีเอส 6</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>ปฏิบัติการออกแบบ สร้าง แก้ไข และตกแต่งภาพประกอบสื่อสิ่งพิมพ์ด้วยโปรแกรมสำเร็จรูป</strong></p>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>5.1 ภาพและคุณสมบัติของไฟล์ภาพ</h3>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm7iY5BOX4t-tK9nyDKuuZp3HX3w8BV8yO0pI2iknIqHInH5_6iSTMIjs&s=10" style="width:250px; display:block; margin:10px auto; border:1px solid #ddd;" alt="InDesign Links Panel">
+        <p><strong>วิธีปฏิบัติ:</strong> ตรวจสอบ "สุขภาพไฟล์" ผ่านพาเนล <strong>Links > Link Info</strong> เพื่อมาตรฐานงานพิมพ์ระดับสูง:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>Effective PPI:</strong> ต้องไม่ต่ำกว่า 300 เพื่อยืนยันความคมชัดที่แท้จริงหลังจากการย่อ/ขยายในหน้ากระดาษ</li>
+                <li><strong>Resolution (Original):</strong> ไฟล์ต้นฉบับควรมีค่าใกล้เคียง 300 DPI เพื่อเป็นฐานทุนของคุณภาพภาพที่ดี</li>
+                <li><strong>Color Mode:</strong> ตรวจสอบว่าเป็นระบบสี <strong>CMYK</strong> เท่านั้น</li>
+            </ul>
+        </div>
+
+        <h3>5.2 ความสำคัญและประเภทของภาพประกอบ</h3>
+        <table>
+            <tr>
+                <th>ชนิดของภาพ</th>
+                <th>ฟอร์แมตที่แนะนำ</th>
+                <th>การใช้งาน</th>
+            </tr>
+            <tr>
+                <td><strong>Vector</strong></td>
+                <td>.AI / .EPS</td>
+                <td>ขยายภาพได้ไม่จำกัด เหมาะกับโลโก้และไอคอน</td>
+            </tr>
+            <tr>
+                <td><strong>Raster (Bitmap)</strong></td>
+                <td>.TIFF / .PSD</td>
+                <td>เก็บรายละเอียดสีได้ครบถ้วนและรองรับความโปร่งใส</td>
+            </tr>
+            <tr>
+                <td><strong>Raster (Web/Draft)</strong></td>
+                <td>.JPEG (Max Quality)</td>
+                <td>ใช้ได้ในงานทั่วไปที่ต้องการขนาดไฟล์เล็กลง</td>
+            </tr>
+        </table>
+
+        <h3>5.3 ลักษณะของภาพวาดใน Adobe InDesign CS6</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้กลุ่มเครื่องมือวาดภาพสร้างองค์ประกอบกราฟิกประกอบเลย์เอาต์</p>
+        <ul>
+            <li><strong>Rectangle/Ellipse Tool:</strong> สำหรับสร้างกรอบหรือพื้นที่สีตายตัว</li>
+            <li><strong>Pen Tool (P):</strong> สำหรับวาดเส้นพาธ (Path) และรูปทรงอิสระ</li>
+        </ul>
+
+        <h3>5.4 การนำรูปภาพจากภายนอกเข้ามาใช้งานฯ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> กด <strong>Ctrl + D (Place)</strong> เลือกไฟล์ภาพ แล้วคลิกลากเพื่อสร้างกรอบ จากนั้นจัดการด้วยชุดคำสั่ง <strong>Fitting</strong>:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>Fill Frame Proportionally:</strong> ปรับภาพให้เต็มกรอบโดยสัดส่วนไม่เพี้ยน (นิยมใช้ที่สุด)</li>
+                <li><strong>Fit Content Proportionally:</strong> ปรับภาพให้พอดีโดยไม่โดนครอปส่วนใดส่วนหนึ่งทิ้ง</li>
+                <li><strong>Center Content:</strong> จัดวางตำแหน่งรูปภาพให้อยู่กึ่งกลางกรอบเฟรมพอดี</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background-color: #f4f6f7; border-top: 5px solid #2980b9;">
+            <strong>📋 Professional Checklist ก่อนส่งไฟล์</strong>
+            <ul>
+                <li>✅ <strong>Link Status:</strong> ตรวจพาเนล Links ต้องไม่มีเครื่องหมายตกใจ <strong>(!)</strong> สีเหลือง</li>
+                <li>✅ <strong>Effective PPI:</strong> ต้องมีค่า ≥ 300 เพื่อความคมชัดระดับสิ่งพิมพ์</li>
+                <li>✅ <strong>Color Mode:</strong> ตรวจสอบว่ารูปภาพทุกใบเป็นระบบสี <strong>CMYK</strong></li>
+                <li>✅ <strong>Save & Package:</strong> รวบรวมไฟล์ทั้งหมดส่งโรงพิมพ์เพื่อป้องกันรูปหาย</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background-color:#fffbe6; border-left:5px solid #f1c40f;">
+            <strong>💡 Embed vs Link</strong>
+            <ul>
+                <li><strong>Link:</strong> การเชื่อมโยงไฟล์ต้นฉบับ <strong>เหมาะกับงานพิมพ์และการแก้ไข</strong> ช่วยให้ไฟล์ InDesign ไม่ใหญ่จนเกินไป</li>
+                <li><strong>Embed:</strong> การฝังไฟล์ลงในเอกสาร <strong>ทำให้ไฟล์มีขนาดใหญ่มากและแก้ไขยาก</strong> หากไฟล์ต้นฉบับเปลี่ยน งานใน InDesign จะไม่อัปเดตตาม</li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 5</h4>
+            <p>การจัดการรูปภาพประกอบอย่างถูกต้องผ่านระบบ Linkage และการควบคุม Effective PPI คือหัวใจสำคัญที่จะทำให้สื่อสิ่งพิมพ์ของคุณคมชัดและทำงานร่วมกับโรงพิมพ์ได้อย่างราบรื่น</p>
+        </div>
+    `
+},
+    u6: {
+    navTitle: "หน่วยที่ 6",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 6 สีในสื่อสิ่งพิมพ์",
+    body: `
+        <section class="info-box" style="background-color: #f0f4f8; border-left: 8px solid #34495e;">
+            <h2>0. สื่อและอุปกรณ์การเรียนรู้</h2>
+            <ul>
+                <li><strong>ซอฟต์แวร์:</strong> โปรแกรม Adobe InDesign CS6</li>
+                <li><strong>ฮาร์ดแวร์:</strong> เครื่องคอมพิวเตอร์สำหรับการปฏิบัติการ</li>
+                <li><strong>อุปกรณ์ต่อพ่วง:</strong> เครื่องพิมพ์สี (Color Printer) สำหรับตรวจเช็คค่าสีงานพิมพ์</li>
+            </ul>
+        </section>
+
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>6.1 ความรู้เบื้องต้นเกี่ยวกับสี</li>
+                    <li>6.2 ทฤษฎีสี</li>
+                    <li>6.3 หลักการประยุกต์ใช้สีให้สอดคล้องกับเป้าหมายของการออกแบบ</li>
+                    <li>6.4 ระบบสี</li>
+                    <li>6.5 โหมดสีในโปรแกรม Adobe InDesign CS6</li>
+                </ul>
+                <ul>
+                    <li>6.6 การใส่สีวัตถุ</li>
+                    <li>6.7 การใส่สีด้วยเครื่องมืออายดรอปเปอร์ทูล</li>
+                    <li>6.8 การระบายสีแบบไล่โทน</li>
+                    <li>6.9 การสร้างภาพโปร่งแสง</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>ปฏิบัติการออกแบบและจัดการสีในสื่อสิ่งพิมพ์ตามมาตรฐานการผลิต</strong></p>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>3. จุดประสงค์การเรียนรู้ (Behavioral Objectives)</h2>
+            <ol>
+                <li>สามารถอธิบายความหมายของระบบสี RGB และ CMYK ได้ถูกต้องตามหลักวิชาการ</li>
+                <li>สามารถเลือกใช้คู่สีตามทฤษฎีสีให้เหมาะสมกับกลุ่มเป้าหมายของสื่อได้</li>
+                <li>สามารถปฏิบัติการใส่สีวัตถุ การไล่โทน และการปรับค่าความโปร่งแสงได้ตามรูปแบบที่กำหนด</li>
+                <li>มีเจตคติที่ดีตามแนวปรัชญาของเศรษฐกิจพอเพียง ด้านความรอบคอบและความรับผิดชอบ</li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>6.1 ความรู้เบื้องต้นเกี่ยวกับสี</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ทำความเข้าใจพื้นฐานของแม่สีซึ่งเป็นจุดกำเนิดของทุกงานออกแบบ:</p>
+        <ul>
+            <li><strong>สีขั้นที่ 1 (Primary Colors):</strong> แดง เหลือง น้ำเงิน เป็นแม่สีตั้งต้นที่ใช้ผสมให้เกิดเฉดสีอื่น ๆ</li>
+        </ul>
+
+        <h3>6.2 ทฤษฎีสี (Color Theory)</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> เลือกใช้ความสัมพันธ์ของสีผ่านวงล้อสีเพื่อสร้างอารมณ์ที่แตกต่าง:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>สีตรงข้าม (Complementary):</strong> ใช้สีที่อยู่ตรงข้ามกัน 180 องศา เพื่อสร้างความโดดเด่นสูงสุด</li>
+                <li><strong>สีใกล้เคียง (Analogous):</strong> ใช้สีที่อยู่ติดกัน 3-5 สี เพื่อความกลมกลืนและสบายตา</li>
+                <li><strong>สีสามเหลี่ยม (Triadic):</strong> ใช้สีที่ห่างกันเท่า ๆ กันเป็นรูปสามเหลี่ยม เพื่อความสมดุลและความหลากหลาย</li>
+            </ul>
+        </div>
+
+        <h3>6.3 หลักการประยุกต์ใช้สีให้สอดคล้องกับเป้าหมาย</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> วิเคราะห์กลุ่มเป้าหมายเพื่อกำหนดโทนสีให้สื่อสารได้อย่างมีประสิทธิภาพ:</p>
+        <ul>
+            <li>สื่อเด็ก: เน้นสีสดใส คอนทราสต์สูง</li>
+            <li>สื่อองค์กร: เน้นสีโทนสุภาพ เยือกเย็น เพื่อความน่าเชื่อถือ</li>
+            <li>สื่อโฆษณา: เน้นสีที่ตัดกันชัดเจนเพื่อดึงดูดสายตา</li>
+        </ul>
+
+        <h3>6.4 ระบบสี (Color Systems)</h3>
+        <img src="https://image.makewebcdn.com/makeweb/m_1920x0/aWI0ofVhm/customer/102912639_1016680925413609_4613502380472950711_o.jpg" style="width:100%; max-width:500px; display:block; margin:20px auto;" alt="RGB vs CMYK Gamut">
+        <p><strong>วิธีปฏิบัติ:</strong> เลือกใช้ระบบสีให้ถูกต้องตามลักษณะของสื่อ:</p>
+        <ul>
+            <li><strong>RGB:</strong> แม่สีแสง (Red, Green, Blue) สำหรับสื่อบนหน้าจอ</li>
+            <li><strong>CMYK:</strong> แม่สีวัตถุ (Cyan, Magenta, Yellow, Key Black) สำหรับสื่อสิ่งพิมพ์</li>
+            <li><strong>Rich Black:</strong> ใช้ค่า C60 M40 Y40 K100 สำหรับพื้นที่สีดำขนาดใหญ่เพื่อให้งานดูดำสนิท</li>
+        </ul>
+
+        <h3>6.5 โหมดสีในโปรแกรม Adobe InDesign CS6</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ตรวจสอบค่าสีผ่านพาเนล <strong>Swatches</strong> และหน้าต่าง <strong>Links > Link Info</strong> เพื่อยืนยันว่าเป็น CMYK ก่อนส่งพิมพ์</p>
+
+        <h3>6.6 การใส่สีวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> เลือกวัตถุแล้วใช้พาเนล <strong>Swatches</strong> หรือ <strong>Color</strong> เพื่อกำหนดสี Fill (พื้นหลัง) และ Stroke (เส้นขอบ)</p>
+        <ul>
+            <li><strong>Global Swatches:</strong> แนะนำให้สร้างสีในพาเนล Swatches เพื่อให้แก้ไขสีครั้งเดียวแล้ววัตถุที่ใช้สีนั้นเปลี่ยนตามทั้งเอกสาร</li>
+        </ul>
+
+        <h3>6.7 การใส่สีด้วยเครื่องมืออายดรอปเปอร์ทูล</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้คีย์ลัด <strong>I (Eyedropper)</strong> คลิกเพื่อ "ดูดสี" จากรูปภาพหรือวัตถุต้นแบบมาใช้กับงานออกแบบเพื่อให้สีมีความสม่ำเสมอ</p>
+
+        <h3>6.8 การระบายสีแบบไล่โทน (Gradients)</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> สร้างมิติให้วัตถุด้วยเครื่องมือ <strong>Gradient Swatch Tool (G)</strong> โดยเลือกรูปแบบการไล่สีแบบ Linear (เส้นตรง) หรือ Radial (วงกลม)</p>
+
+        <h3>6.9 การสร้างภาพโปร่งแสง</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ปรับค่า <strong>Opacity</strong> ในพาเนล <strong>Effects</strong> เพื่อสร้างการซ้อนทับที่นุ่มนวล และใช้ <strong>Drop Shadow</strong> เพื่อเพิ่มมิติความลึก</p>
+
+        <div class="info-box" style="background-color: #f4f6f7; border-top: 5px solid #2980b9;">
+            <strong>📋 Professional Color Checklist</strong>
+            <ul>
+                <li>✅ ตรวจสอบสีด้วย Soft Proof (<strong>View > Proof Colors</strong>) ก่อนส่งงาน</li>
+                <li>✅ มั่นใจว่าตัวอักษรสีดำขนาดเล็กใช้ค่า K100 เท่านั้น เพื่อป้องกันรอยเหลื่อมตอนพิมพ์</li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 6</h4>
+            <p>การเข้าใจทฤษฎีสีและเชี่ยวชาญการจัดการโหมดสี CMYK คือหัวใจสำคัญของการผลิตสื่อสิ่งพิมพ์ที่ได้มาตรฐานและสื่อสารได้ตรงใจกลุ่มเป้าหมาย</p>
+        </div>
+    `
+},
+    u7: {
+    navTitle: "หน่วยที่ 7",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 7 การทำงานกับวัตถุ",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>7.1 การเลือกวัตถุ</li>
+                    <li>7.2 การเคลื่อนย้ายวัตถุ</li>
+                    <li>7.3 การปรับขนาดวัตถุ</li>
+                    <li>7.4 การคัดลอกวัตถุ</li>
+                    <li>7.5 การหมุนวัตถุ</li>
+                    <li>7.6 การบิดรูปทรงวัตถุ</li>
+                </ul>
+                <ul>
+                    <li>7.7 การพลิกกลับด้านวัตถุ</li>
+                    <li>7.8 การล็อกวัตถุ</li>
+                    <li>7.9 การมาสก์วัตถุ</li>
+                    <li>7.10 การรวมกลุ่มวัตถุ</li>
+                    <li>7.11 การจัดลำดับการซ้อนวัตถุ</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>ทำงานกับวัตถุด้วยโปรแกรมผลิตสื่อสิ่งพิมพ์</strong></p>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>3. จุดประสงค์การเรียนรู้ (Learning Objectives)</h2>
+            <strong>จุดประสงค์เชิงพฤติกรรม:</strong>
+            <ol>
+                <li>อธิบายวิธีการเลือกและปรับแต่งวัตถุได้อย่างถูกต้อง</li>
+                <li>ปฏิบัติการเคลื่อนย้าย ปรับขนาด และคัดลอกวัตถุได้ตามรูปแบบที่กำหนด</li>
+                <li>จัดลำดับการซ้อนทับและการรวมกลุ่มวัตถุได้อย่างเป็นระเบียบ</li>
+                <li><strong>มีเจตคติที่ดีตามแนวปรัชญาของเศรษฐกิจพอเพียง ด้านการตรงต่อเวลา ตั้งใจทำงาน รอบคอบ และมีความรับผิดชอบ</strong></li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>7.1 การเลือกวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้เครื่องมือ <strong>Selection Tool (V)</strong> เพื่อเลือกส่วนประกอบต่าง ๆ ของงาน:</p>
+        <ul>
+            <li>เลือกเฟรม (Frame): คลิกที่ขอบกรอบวัตถุ</li>
+            <li>เลือกเนื้อหาในเฟรม: ดับเบิลคลิกที่วัตถุ</li>
+            <li>เลือกหลายชิ้น: กด <strong>Shift + คลิก</strong> หรือคลิกลากคลุม</li>
+        </ul>
+
+        <h3>7.2 การเคลื่อนย้ายวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> คลิกค้างที่วัตถุแล้วลาก (Drag) หรือใช้ปุ่มลูกศรบนคีย์บอร์ดขยับ (Nudge) ทีละ 1 px หรือกด <strong>Shift + ลูกศร</strong> เพื่อขยับทีละ 10 px</p>
+
+        <h3>7.3 การปรับขนาดวัตถุ</h3>
+        <img src="https://carijansen.com/wp-content/uploads/2014/06/Transform.png" style="width:250px; display:block; margin:10px auto; border:1px solid #ddd;" alt="Transform Panel">
+        <p><strong>วิธีปฏิบัติ:</strong> ลากจุด Handle ที่มุมเฟรมเพื่อเปลี่ยนขนาด <strong>(กด Shift ค้างไว้เพื่อรักษาสัดส่วนภาพ)</strong></p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li>Precision: สามารถกำหนดค่าขนาดตัวเลขผ่าน <strong>Transform Panel</strong> ได้เพื่อความแม่นยำสูง</li>
+                <li><strong>Pro Tip:</strong> หลีกเลี่ยงการใช้ Horizontal/Vertical Scale เพราะจะทำให้ฟอนต์และภาพเสียสัดส่วน</li>
+            </ul>
+        </div>
+
+        <h3>7.4 การคัดลอกวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้คำสั่ง Ctrl+C / Ctrl+V หรือกด <strong>Alt ค้างไว้แล้วลากวัตถุ</strong> เพื่อคัดลอกทันที</p>
+        <ul>
+            <li>Paste in Place: กด <strong>Ctrl+Shift+Alt+V</strong> สำหรับวางซ้อนตำแหน่งเดิม</li>
+        </ul>
+
+        <h3>7.5 การหมุนวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้เครื่องมือ <strong>Rotate Tool (R)</strong> หมุนวัตถุตามต้องการ และกด <strong>Shift</strong> เพื่อจำกัดมุมทุก ๆ 45 องศา</p>
+
+        <h3>7.6 การบิดรูปทรงวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้เครื่องมือ <strong>Shear Tool</strong> เพื่อบิดเอียงวัตถุให้เกิดมิติหรือเอฟเฟกต์พิเศษ</p>
+
+        <h3>7.7 การพลิกกลับด้านวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้คำสั่ง <strong>Object > Transform > Flip Horizontal</strong> หรือ <strong>Flip Vertical</strong> เพื่อกลับด้านวัตถุ</p>
+
+        <h3>7.8 การล็อกวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้คำสั่ง <strong>Ctrl+L (Lock)</strong> เพื่อล็อกวัตถุ และ <strong>Ctrl+Alt+L (Unlock All on Spread)</strong> เพื่อปลดล็อกวัตถุทั้งหมด</p>
+
+        <h3>7.9 การมาสก์วัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้คำสั่ง <strong>Paste Into (Ctrl+Alt+V)</strong> เพื่อนำวัตถุเข้าไปบรรจุในรูปทรง Shape แบบอิสระ</p>
+
+        <h3>7.10 การรวมกลุ่มวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> กด <strong>Ctrl+G (Group)</strong> เพื่อรวมเป็นชุดเดียวกัน และ <strong>Ctrl+Shift+G</strong> เพื่อแยกกลุ่ม (Ungroup)</p>
+
+        <h3>7.11 การจัดลำดับการซ้อนวัตถุ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> จัดระเบียบชั้นของวัตถุผ่านเมนู <strong>Object > Arrange</strong>:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>Bring to Front (Ctrl+Shift+]):</strong> ย้ายมาไว้หน้าสุด</li>
+                <li><strong>Send to Back (Ctrl+Shift+[):</strong> ย้ายไปไว้หลังสุด</li>
+                <li><strong>Bring Forward:</strong> ย้ายขึ้นมาหนึ่งลำดับชั้น</li>
+                <li><strong>Send Backward:</strong> ย้ายลงหนึ่งลำดับชั้น</li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 7</h4>
+            <p>การเข้าใจกลไกของเฟรมและเครื่องมือ Transform คือหัวใจสำคัญของการจัดการเลย์เอาต์ที่เป๊ะและเป็นระเบียบ</p>
+        </div>
+    `
+},
+    u8: {
+    navTitle: "หน่วยที่ 8",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 8 การใช้งานเลเยอร์",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>8.1 ความหมายของเลเยอร์</li>
+                    <li>8.2 ประโยชน์ของเลเยอร์</li>
+                </ul>
+                <ul>
+                    <li>8.3 การสร้างเลเยอร์</li>
+                    <li>8.4 การจัดลำดับและย้ายวัตถุระหว่างเลเยอร์</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>ปฏิบัติการใช้งานเลเยอร์เพื่อออกแบบ สร้าง แก้ไข และตกแต่งสื่อสิ่งพิมพ์ด้วยโปรแกรมสำเร็จรูป</strong></p>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>3. จุดประสงค์การเรียนรู้ (Learning Objectives)</h2>
+            <strong>จุดประสงค์เชิงพฤติกรรม:</strong>
+            <ol>
+                <li>บอกความหมายและประโยชน์ของเลเยอร์ได้อย่างถูกต้อง</li>
+                <li>อธิบายวิธีการใช้เครื่องมือและคำสั่งจัดการเลเยอร์ได้</li>
+                <li>ปฏิบัติการสร้าง ลบ และจัดการเลเยอร์ตามขั้นตอนที่กำหนด</li>
+                <li><strong>มีเจตคติที่ดีตามแนวปรัชญาของเศรษฐกิจพอเพียง ด้านการตรงต่อเวลา ตั้งใจทำงาน รอบคอบ และพร้อมปรับปรุงแก้ไขเมื่อผิดพลาด</strong></li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>8.1 ความหมายของเลเยอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ให้ทำความเข้าใจว่าเลเยอร์คือชั้นงานที่ใช้จัดเก็บวัตถุ โดยวางซ้อนทับกันคล้ายแผ่นใส</p>
+        <ul>
+            <li>การจัดวางชั้นงานทำให้เราสามารถจัดการวัตถุแต่ละกลุ่มแยกจากกันได้ชัดเจน</li>
+            <li>วัตถุที่อยู่ในเลเยอร์ด้านบนจะแสดงผลทับวัตถุที่อยู่ในเลเยอร์ด้านล่างเสมอ</li>
+        </ul>
+        
+
+        <h3>8.2 ประโยชน์ของเลเยอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้เลเยอร์เพื่อบริหารจัดการความซับซ้อนของเลย์เอาต์สื่อสิ่งพิมพ์:</p>
+        <ul>
+            <li><strong>แยกส่วนประกอบ:</strong> ช่วยให้การเลือกและแก้ไขวัตถุเป็นไปได้อย่างรวดเร็ว ไม่ปะปนกัน</li>
+            <li><strong>เพิ่มความแม่นยำ:</strong> การล็อกเลเยอร์ที่ไม่เกี่ยวข้องช่วยลดความผิดพลาดจากการเคลื่อนย้ายวัตถุโดยไม่ตั้งใจ</li>
+        </ul>
+
+        <h3>8.3 การสร้างเลเยอร์</h3>
+        <img src="https://helpx-prod.scene7.com/is/image/HelpxProd/ty_about_layers_palette?$png$&jpegSize=100&wid=354" style="width:250px; display:block; margin:10px auto; border:1px solid #ddd;" alt="Layers Panel">
+        <p><strong>วิธีปฏิบัติ:</strong> ควบคุมทุกฟังก์ชันผ่านพาเนล <strong>Layers (F7)</strong> เพื่อจัดระเบียบชั้นงาน:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>สร้างเลเยอร์ใหม่:</strong> คลิกไอคอนแผ่นกระดาษ หรือกดคีย์ลัด <strong>Ctrl + Shift + N</strong></li>
+                <li><strong>ตั้งชื่อเลเยอร์:</strong> ดับเบิลคลิกที่ชื่อเดิมเพื่อระบุชื่อใหม่ตามหมวดหมู่ของงาน</li>
+                <li><strong>แสดง/ซ่อน:</strong> คลิกไอคอน <strong>รูปดวงตา</strong> เพื่อควบคุมการมองเห็นวัตถุในชั้นนั้น ๆ</li>
+                <li><strong>ล็อกเลเยอร์:</strong> คลิกช่องไอคอน <strong>แม่กุญแจ</strong> เพื่อป้องกันการแก้ไขวัตถุในเลเยอร์นั้น</li>
+                <li><strong>ลบเลเยอร์:</strong> คลิกเลือกเลเยอร์ที่ต้องการ แล้วคลิก <strong>ไอคอนถังขยะ</strong> ที่มุมพาเนล</li>
+            </ul>
+        </div>
+
+        <h3>8.4 การจัดลำดับและย้ายวัตถุระหว่างเลเยอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้พาเนล Layers ในการควบคุมตำแหน่งวัตถุข้ามเลเยอร์อย่างรวดเร็ว:</p>
+        
+        <ol>
+            <li>คลิกเลือกวัตถุที่ต้องการย้ายบนหน้าเอกสาร</li>
+            <li>ลาก <strong>จุดสี่เหลี่ยมสีเล็ก</strong> ที่ปรากฏท้ายชื่อเลเยอร์ปัจจุบันไปยังเลเยอร์ปลายทาง</li>
+            <li>วัตถุจะถูกย้ายไปบรรจุอยู่ในเลเยอร์ปลายทางทันที</li>
+        </ol>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 8</h4>
+            <p>ความชำนาญในการจัดการชั้นงานผ่านพาเนล Layers คือรากฐานของการทำเลย์เอาต์ที่มีคุณภาพ ช่วยให้นักออกแบบทำงานได้เป็นระบบและลดข้อผิดพลาดหน้างานได้อย่างยอดเยี่ยม</p>
+        </div>
+    `
+},
+    u9: {
+    navTitle: "หน่วยที่ 9",
+    headerSub: "รหัสวิชา 20204–2109",
+    title: "หน่วยที่ 9 หน้ามาสเตอร์",
+    body: `
+        <section class="info-box">
+            <h2>1. หัวข้อเรื่อง (Topics)</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <ul>
+                    <li>9.1 การใช้งานพาเนลเพจในการจัดการหน้ามาสเตอร์</li>
+                    <li>9.2 การสร้างหน้ามาสเตอร์</li>
+                    <li>9.3 การใช้งานหน้ามาสเตอร์</li>
+                    <li>9.4 การนำหน้ามาสเตอร์จากไฟล์เอกสารอื่นๆ เข้ามาใช้งาน</li>
+                </ul>
+                <ul>
+                    <li>9.5 การปรับแต่งหน้ามาสเตอร์</li>
+                    <li>9.6 การเพิ่มหน้ามาสเตอร์จากหน้ากระดาษ</li>
+                    <li>9.7 การลบหน้ามาสเตอร์</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #d35400;">
+            <h2>2. สมรรถนะย่อย (Element of Competency)</h2>
+            <p><strong>ออกแบบหน้ามาสเตอร์สื่อสิ่งพิมพ์ตามการใช้งาน</strong></p>
+        </section>
+
+        <section class="info-box" style="border-left: 8px solid #2980b9;">
+            <h2>3. จุดประสงค์การเรียนรู้ (Learning Objectives)</h2>
+            <strong>จุดประสงค์เชิงพฤติกรรม:</strong>
+            <ol>
+                <li>อธิบายวิธีการใช้งานพาเนลเพจเพื่อจัดการโครงสร้างเอกสารได้</li>
+                <li>ปฏิบัติการสร้าง ใช้งาน และจัดการหน้ามาสเตอร์กับสื่อสิ่งพิมพ์หลายหน้าได้</li>
+                <li>ประยุกต์ใช้ระบบหน้ามาสเตอร์เพื่อสร้างความเสถียรและความแม่นยำในงานจัดหน้า</li>
+                <li><strong>มีเจตคติที่ดีตามแนวปรัชญาของเศรษฐกิจพอเพียง ด้านการตรงต่อเวลา ตั้งใจทำงาน รอบคอบ และมีความรับผิดชอบ</strong></li>
+            </ol>
+        </section>
+
+        <hr style="border: 1px double var(--border-color); margin: 40px 0;">
+
+        <h3>9.1 การใช้งานพาเนลเพจในการจัดการหน้ามาสเตอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> เข้าสู่ศูนย์กลางการจัดการหน้ากระดาษผ่านพาเนล <strong>Pages (F12)</strong></p>
+        <ul>
+            <li>พื้นที่ครึ่งบนของพาเนลคือพื้นที่สำหรับสร้างและบริหารจัดการ <strong>Master Pages</strong></li>
+            <li>ดับเบิลคลิกที่ชื่อหน้ามาสเตอร์เพื่อเข้าไปวางองค์ประกอบที่ต้องการให้ปรากฏทุกหน้า</li>
+        </ul>
+
+        <h3>9.2 การสร้างหน้ามาสเตอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> คลิกเมนูย่อยของพาเนล Pages แล้วเลือก <strong>New Master</strong> เพื่อสร้างเทมเพลตใหม่</p>
+        <ul>
+            <li>กำหนดค่า <strong>Prefix</strong> และตั้งชื่อเพื่อให้จำแนกประเภทเลย์เอาต์ได้ง่าย</li>
+            <li><strong>Prefix ที่นิยมใช้:</strong> เช่น A-Template, B-Content, C-Ads เพื่อแยกประเภทหน้ามาสเตอร์ให้เป็นระบบมืออาชีพ</li>
+        </ul>
+
+        <h3>9.3 การใช้งานหน้ามาสเตอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ประยุกต์ใช้เทมเพลตกับหน้าเอกสารจริงผ่านพาเนล Pages:</p>
+        <ul>
+            <li><strong>Drag & Drop:</strong> คลิกลากหน้ามาสเตอร์ไปวางทับหน้ากระดาษที่ต้องการใช้</li>
+            <li><strong>Batch Apply:</strong> คลิกขวาที่หน้ากระดาษ เลือก <strong>Apply Master to Pages</strong> เพื่อกำหนดมาสเตอร์ให้หลายหน้าพร้อมกันอย่างรวดเร็ว</li>
+        </ul>
+
+        <h3>9.4 การนำหน้ามาสเตอร์จากไฟล์เอกสารอื่นๆ เข้ามาใช้งาน</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> ใช้คำสั่ง <strong>Master Pages > Load Master Pages</strong> เพื่อดึงเอาเลย์เอาต์สำเร็จรูปจากไฟล์โปรเจกต์อื่นมาใช้งานซ้ำ</p>
+
+        <h3>9.5 การปรับแต่งหน้ามาสเตอร์</h3>
+        <img src="https://helpx.adobe.com/content/dam/help/en/indesign/using/pages-spreads/jcr%3Acontent/main-pars/image_0/ty_15.png.img.png" style="width:250px; display:block; margin:10px auto; border:1px solid #ddd;" alt="Pages and Masters Panel">
+        <p><strong>วิธีปฏิบัติ:</strong> ใส่ฟังก์ชันที่ต้องปรากฏซ้ำทุกหน้า เช่น เลขหน้าอัตโนมัติ (<strong>Type > Insert Special Character > Markers > Current Page Number</strong>)</p>
+        
+        <ul>
+            <li><strong>Override Technique:</strong> กด <strong>Ctrl + Shift + คลิก</strong> เพื่อปลดล็อกวัตถุจากหน้ามาสเตอร์มาแก้ไขเฉพาะจุดบนหน้าจริง</li>
+        </ul>
+
+        <h3>9.6 การเพิ่มหน้ามาสเตอร์จากหน้ากระดาษ</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> หากจัดหน้ากระดาษใดเสร็จแล้วและต้องการใช้เป็นต้นแบบ ให้คลิกลากหน้านั้นขึ้นไปวางในพื้นที่ Master Pages เพื่อแปลงเป็นหน้ามาสเตอร์ทันที</p>
+
+        <h3>9.7 การลบหน้ามาสเตอร์</h3>
+        <p><strong>วิธีปฏิบัติ:</strong> บริหารจัดการเทมเพลตที่ไม่ใช้งานหรือต้องการยกเลิกการเชื่อมโยง:</p>
+        <div class="tech-deep-dive">
+            <ul>
+                <li><strong>ลบถาวร:</strong> เลือกหน้ามาสเตอร์แล้วคลิกไอคอนถังขยะ (ระวัง: หน้าที่เคยใช้จะเปลี่ยนเป็นมาสเตอร์ <strong>[None]</strong> โดยอัตโนมัติ)</li>
+                <li><strong>ถอดการใช้งาน:</strong> หากต้องการแค่เอาเทมเพลตออก ให้คลิกขวาที่หน้ากระดาษ > <strong>Apply Master to Pages > [None]</strong></li>
+            </ul>
+        </div>
+
+        <div class="summary-box">
+            <h4 style="margin-top:0; color:var(--accent-color); text-align:center;">บทสรุปหน่วยที่ 9</h4>
+            <p>หน้ามาสเตอร์คือทักษะพื้นฐานสำคัญของนักออกแบบมืออาชีพ ที่ช่วยให้งานจัดหน้ามีระบบ มีความเสถียร และมีความแม่นยำสูง ช่วยลดระยะเวลาในการทำงานผลิตสื่อสิ่งพิมพ์ได้อย่างยอดเยี่ยม</p>
+        </div>
+    `
+}
+
+};
+
+document.addEventListener("click", e=>{
+    const menu = document.getElementById("main-menu");
+    const toggle = document.querySelector(".menu-toggle");
+
+    if(!menu.contains(e.target) && !toggle.contains(e.target)){
+        menu.classList.remove("show");
+    }
+});
+    </script>
+</body>
+</html>
