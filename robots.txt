@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://espresso3shots.github.io/ProductionOfPrintMedia/sitemap.xml
